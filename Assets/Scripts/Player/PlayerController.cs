@@ -10,15 +10,24 @@ public class PlayerController : MonoBehaviour
     public static PlayerController Instance;
 
     [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private float dashSpeed = 10f;
+    [SerializeField] float dashClipLength = 0.367f;
+    [SerializeField] private float dashCooldown = 0.7f;
 
     private PlayerControls playerControls;
     private Vector2 movement;
+    private Vector2 dashDirection;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private const string moveX = "Horizontal";  
     private const string moveY = "Vertical";     
     private const string SPEED = "Speed";
+    
+    private bool isDashing = false;
+
+    private float originalSpeed;
+
     
 
 
@@ -31,6 +40,11 @@ public class PlayerController : MonoBehaviour
         playerControls = new PlayerControls();
     }
 
+    private void Start()
+    {
+        originalSpeed = moveSpeed;
+        playerControls.Player.Sprint.performed += _ => Dash();
+    }
     private void OnEnable()
     {
         playerControls.Enable();
@@ -38,9 +52,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Animate();
         PlayerInput();
         Flip();
+
+        if (!isDashing)
+        {
+        Animate();
+        }
 
     }
 
@@ -87,5 +105,34 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    
+    private void Dash()
+    {
+    if (!isDashing && movement != Vector2.zero)
+    {
+        StartCoroutine(DashRoutine());
+    }
+    }
+
+    private IEnumerator DashRoutine()
+    {
+    isDashing = true;
+    dashDirection = movement;
+    moveSpeed *= dashSpeed;
+    if (dashDirection != Vector2.zero)
+    {
+    animator.SetFloat(moveX, dashDirection.x);
+    animator.SetFloat(moveY, dashDirection.y);
+    animator.SetBool("IsDashing", true);
+
+     
+    yield return new WaitForSeconds(dashClipLength);
+    }
+
+    moveSpeed = originalSpeed;
+    animator.SetBool("IsDashing", false);
+
+    yield return new WaitForSeconds(dashCooldown);
+
+    isDashing = false;
+    }
 }
