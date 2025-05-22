@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: Spring Tile_60
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 647359544, guid: 02262834fc8e60c4eb66d91bcd557b12, type: 3}
+  m_Sprite: {fileID: -5627616047901950602, guid: 8d69a6482660a5b4689934bcb500f15b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
