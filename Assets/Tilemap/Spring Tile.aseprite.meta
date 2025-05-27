@@ -147,7 +147,7 @@ ScriptedImporter:
   spriteSheetImportData:
   - name: Spring Tile_0
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -168,7 +168,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_1
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -189,7 +189,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_2
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -210,7 +210,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_3
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -231,7 +231,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_4
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -252,7 +252,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_5
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -273,7 +273,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_6
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -294,7 +294,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_7
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -315,7 +315,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_8
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -336,7 +336,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_9
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -357,7 +357,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_10
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -378,7 +378,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_11
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -399,7 +399,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_12
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -420,7 +420,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_13
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -441,7 +441,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_14
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -462,7 +462,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_15
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -483,7 +483,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_16
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -504,7 +504,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_17
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -525,7 +525,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_18
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -546,7 +546,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_19
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -567,7 +567,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_20
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -588,7 +588,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_21
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -609,7 +609,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_22
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -630,7 +630,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_23
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -651,7 +651,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_24
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -672,7 +672,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_25
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -693,7 +693,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_26
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -714,7 +714,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_27
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -735,7 +735,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_28
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -756,7 +756,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_29
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -777,7 +777,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_30
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -798,7 +798,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_31
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -819,7 +819,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_32
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -840,7 +840,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_33
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -861,7 +861,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_34
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -882,7 +882,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_35
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -903,7 +903,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_36
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -924,7 +924,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_37
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -945,7 +945,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_38
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -966,7 +966,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_39
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -987,7 +987,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_40
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1008,7 +1008,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_41
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1029,7 +1029,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_42
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1050,7 +1050,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_43
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1071,7 +1071,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_44
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1092,7 +1092,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_45
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1113,7 +1113,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_46
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1134,7 +1134,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_47
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1155,7 +1155,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_48
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1176,7 +1176,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_49
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1197,7 +1197,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_50
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1218,7 +1218,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_51
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1239,7 +1239,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_52
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1260,7 +1260,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_53
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1281,7 +1281,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_54
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1302,7 +1302,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_55
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1323,7 +1323,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_56
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1344,7 +1344,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_57
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1365,7 +1365,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_58
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1386,7 +1386,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_59
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1407,7 +1407,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_60
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1428,7 +1428,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_61
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1449,7 +1449,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_62
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1470,7 +1470,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_63
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1491,7 +1491,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_64
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1512,7 +1512,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_65
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1533,7 +1533,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_66
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1554,7 +1554,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_67
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1575,7 +1575,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_68
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1596,7 +1596,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_69
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1617,7 +1617,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_70
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1638,7 +1638,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_71
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1659,7 +1659,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_72
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1680,7 +1680,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_73
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1701,7 +1701,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_74
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1722,7 +1722,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_75
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1743,7 +1743,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_76
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -1764,14 +1764,14 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_77
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 52
-      y: 17
+      x: 100
+      y: 33
       width: 16
       height: 16
     spriteID: e3e92f0b3dda2f14485161da328eb0d2
@@ -1785,14 +1785,14 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_78
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 68
-      y: 17
+      x: 116
+      y: 33
       width: 16
       height: 16
     spriteID: 4ef7a2c2922971448b53f5d0263b8523
@@ -1806,13 +1806,13 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_79
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 84
+      x: 52
       y: 17
       width: 16
       height: 16
@@ -1827,14 +1827,14 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_80
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 52
-      y: 1
+      x: 68
+      y: 17
       width: 16
       height: 16
     spriteID: bcfc6d78ba0c52b4292cb59ffa802e1c
@@ -1848,14 +1848,14 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_81
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 68
-      y: 1
+      x: 84
+      y: 17
       width: 16
       height: 16
     spriteID: 0e7cb7c7f05f12e478325f7a92ba7a86
@@ -1869,6 +1869,90 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: Spring Tile_82
     originalName: 
+    pivot: {x: 0, y: 0}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 100
+      y: 17
+      width: 16
+      height: 16
+    spriteID: a8d71e3ff2260694d8987f0d018f3ef1
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Spring Tile_83
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 116
+      y: 17
+      width: 16
+      height: 16
+    spriteID: adf5f0b93b6d7994bac6416672a8ea47
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Spring Tile_84
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 52
+      y: 1
+      width: 16
+      height: 16
+    spriteID: e9ea07b8e5fe8a942b88bf478536baa6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Spring Tile_85
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 1
+      width: 16
+      height: 16
+    spriteID: 04a3ecc16c0bcce49907998392e0ffbe
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Spring Tile_86
+    originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -1879,7 +1963,7 @@ ScriptedImporter:
       y: 1
       width: 16
       height: 16
-    spriteID: a8d71e3ff2260694d8987f0d018f3ef1
+    spriteID: 35f36c9f814437c43abc81bac773e92a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -1906,9 +1990,9 @@ ScriptedImporter:
       additiveSortOrder: 0
       cellRect:
         x: 0
-        y: 0
-        width: 240
-        height: 224
+        y: 19
+        width: 190
+        height: 205
       spriteId: e0ea71c052b7ab84b8cda1e823d3cc61
     linkedCells: []
     parentIndex: -1
