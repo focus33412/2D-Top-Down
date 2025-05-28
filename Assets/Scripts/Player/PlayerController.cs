@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<PlayerController>
 {
 
-    public static PlayerController Instance;
+    
 
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float dashSpeed = 10f;
@@ -31,9 +31,9 @@ public class PlayerController : MonoBehaviour
     
 
 
-    private void Awake()
+    protected override void Awake()
     {
-        Instance = this;
+        base.Awake();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
