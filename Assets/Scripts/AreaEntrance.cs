@@ -6,20 +6,34 @@ public class AreaEntrance : MonoBehaviour
 {
     [SerializeField] private string transitionName;
 
-    private IEnumerator Start()
+    private void Start() {
+        StartCoroutine(InitializeWithDelay());
+    }
+
+    private IEnumerator InitializeWithDelay()
     {
-        // Ждём, пока загрузится PlayerController и SceneManagement
-        yield return new WaitUntil(() => SceneManagement.Instance != null && PlayerController.Instance != null);
+        // Даем время на инициализацию всех компонентов
+        yield return new WaitForSeconds(0.1f);
 
-        if (transitionName == SceneManagement.Instance.SceneTransitionName)
-        {
+        if (SceneManagement.Instance == null) {
+            Debug.LogError("SceneManagement.Instance is null!");
+            yield break;
+        }
+
+        if (PlayerController.Instance == null) {
+            Debug.LogError("PlayerController.Instance is null!");
+            yield break;
+        }
+
+        if (CameraController.Instance == null) {
+            Debug.LogError("CameraController.Instance is null!");
+            yield break;
+        }
+
+        if (transitionName == SceneManagement.Instance.SceneTransitionName) {
             PlayerController.Instance.transform.position = this.transform.position;
-
-            // Безопасный вызов установки камеры
-            if (CameraController.Instance != null)
-            {
-                CameraController.Instance.SetPlayerCameraFollow();
-            }
+            CameraController.Instance.SetPlayerCameraFollow();
+            UIFade.Instance.FadeToClear();
         }
     }
 }

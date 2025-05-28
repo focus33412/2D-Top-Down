@@ -7,32 +7,42 @@ public class CameraController : Singleton<CameraController>
 {
     private CinemachineVirtualCamera cinemachineVirtualCamera;
 
-    private void Start()
+    protected override void Awake()
     {
-        StartCoroutine(WaitAndAttachCamera());
+        base.Awake();
+        InitializeCamera();
     }
 
-    private IEnumerator WaitAndAttachCamera()
+    private void InitializeCamera()
     {
-        // Ждём пока PlayerController будет доступен
-        while (PlayerController.Instance == null)
+        cinemachineVirtualCamera = GetComponent<CinemachineVirtualCamera>();
+        if (cinemachineVirtualCamera == null)
         {
-            yield return null;
+            cinemachineVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            if (cinemachineVirtualCamera == null)
+            {
+                Debug.LogError("CinemachineVirtualCamera не найден на сцене! Убедитесь, что на сцене есть объект с компонентом CinemachineVirtualCamera");
+            }
         }
-
-        SetPlayerCameraFollow();
     }
 
-    public void SetPlayerCameraFollow()
-    {
-        cinemachineVirtualCamera = FindFirstObjectByType<CinemachineVirtualCamera>();
-        if (cinemachineVirtualCamera != null)
+    public void SetPlayerCameraFollow() {
+        if (cinemachineVirtualCamera == null)
         {
-            cinemachineVirtualCamera.Follow = PlayerController.Instance.transform;
+            InitializeCamera();
+            if (cinemachineVirtualCamera == null)
+            {
+                Debug.LogError("Не удалось найти CinemachineVirtualCamera!");
+                return;
+            }
         }
-        else
+        
+        if (PlayerController.Instance == null)
         {
-            Debug.LogWarning("CinemachineVirtualCamera not found!");
+            Debug.LogError("PlayerController.Instance is null!");
+            return;
         }
+
+        cinemachineVirtualCamera.Follow = PlayerController.Instance.transform;
     }
 }
