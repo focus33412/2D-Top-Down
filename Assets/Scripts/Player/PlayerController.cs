@@ -13,6 +13,7 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField] private float dashSpeed = 10f;
     [SerializeField] float dashClipLength = 0.367f;
     [SerializeField] private float dashCooldown = 0.7f;
+    [SerializeField] private Transform weaponCollider;
 
     private PlayerControls playerControls;
     private Vector2 movement;
@@ -67,6 +68,10 @@ public class PlayerController : Singleton<PlayerController>
         Vector2 movement = new Vector2(playerControls.Player.Move.ReadValue<Vector2>().x, playerControls.Player.Move.ReadValue<Vector2>().y);
         
         Move(movement);
+    }
+
+    public Transform GetWeaponCollider(){
+        return weaponCollider;
     }
 
     private void PlayerInput()
