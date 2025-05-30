@@ -1,12 +1,16 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
 
 public class ActiveWeapon : Singleton<ActiveWeapon>
 {
    public MonoBehaviour CurrentActiveWeapon { get; private set; }
 
    private PlayerControls playerControls;
+   private float timeBetweenAttacks;
 
-   private bool attackButtomDown, isAttacking = false;
+   private bool attackButtonDown, isAttacking = false;
 
    protected override void Awake() 
    {
@@ -23,6 +27,8 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
     {
         playerControls.Player.Attack.started += _ => StartAttacking();
         playerControls.Player.Attack.canceled += _ => StopAttacking();
+
+        AttackCooldown();
    }
 
     private void Update() 
@@ -32,28 +38,37 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
 
     public void NewWeapon(MonoBehaviour newWeapon){
         CurrentActiveWeapon = newWeapon;
+
+        AttackCooldown();
+        timeBetweenAttacks = (CurrentActiveWeapon as IWeapon).GetWeaponInfo().weaponCooldown;
     }
 
     public void WeaponNull(){
         CurrentActiveWeapon = null;
     }
 
-    public void ToggleIsAttacking(bool value)
-    {
-      isAttacking = value;
+    private void AttackCooldown(){
+        isAttacking = true;
+        StopAllCoroutines();
+        StartCoroutine(TimeBetweenAttacksRoutine());
+    }
+
+    private IEnumerator TimeBetweenAttacksRoutine(){
+        yield return new WaitForSeconds(timeBetweenAttacks);
+        isAttacking = false;
     }
 
     private void StartAttacking(){
-        attackButtomDown = true;
+        attackButtonDown = true;
     }
 
     private void StopAttacking(){
-        attackButtomDown = false;
+        attackButtonDown = false;
     }
 
     private void Attack(){
-        if(attackButtomDown && !isAttacking){
-            isAttacking = true;
+        if (attackButtonDown && !isAttacking && CurrentActiveWeapon){
+            AttackCooldown();
             (CurrentActiveWeapon as IWeapon).Attack();
         }
     }

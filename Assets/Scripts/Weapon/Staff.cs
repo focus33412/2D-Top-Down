@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Staff : MonoBehaviour, IWeapon
 {
-    /*[SerializeField] private WeaponInfo weaponInfo;
+    [SerializeField] private WeaponInfo weaponInfo;
     [SerializeField] private GameObject magicLaser;
     [SerializeField] private Transform magicLaserSpawnPoint;
 
@@ -18,16 +18,14 @@ public class Staff : MonoBehaviour, IWeapon
 
     private void Update() {
         MouseFollowWithOffset();
-    }*/
+    }
 
 
     public void Attack() {
-        Debug.Log("Staff Attack");
-        ActiveWeapon.Instance.ToggleIsAttacking(false);
-        //myAnimator.SetTrigger(ATTACK_HASH);
+        myAnimator.SetTrigger(ATTACK_HASH);
     }
 
-    /*public void SpawnStaffProjectileAnimEvent() {
+    public void SpawnStaffProjectileAnimEvent() {
         GameObject newLaser = Instantiate(magicLaser, magicLaserSpawnPoint.position, Quaternion.identity);
         newLaser.GetComponent<MagicLaser>().UpdateLaserRange(weaponInfo.weaponRange);
     }
@@ -52,5 +50,5 @@ public class Staff : MonoBehaviour, IWeapon
         {
             ActiveWeapon.Instance.transform.rotation = Quaternion.Euler(0, 0, angle);
         }
-    }*/
+    }
 }

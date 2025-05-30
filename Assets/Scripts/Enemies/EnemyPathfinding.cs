@@ -8,23 +8,27 @@ public class EnemyPathfinding : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 moveDirection;
-    private KnockBack knockBack;    
+    private KnockBack knockBack;   
+    private SpriteRenderer spriteRenderer;
 
-    private void Awake()
-    {
+    private void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         knockBack = GetComponent<KnockBack>();
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         if (knockBack.GettingKnockedBack) { return; }
         rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
+
+        if (moveDirection.x < 0 ) {
+            spriteRenderer.flipX = true;
+        } else if (moveDirection.x > 0) {
+            spriteRenderer.flipX = false;
+        }
     }
 
-    public void MoveTo(Vector2 targetPosition){
+    public void MoveTo(Vector2 targetPosition) {
         moveDirection = targetPosition ;
-    }
-    
-
+    }   
 }
