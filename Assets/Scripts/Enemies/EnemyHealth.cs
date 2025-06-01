@@ -9,7 +9,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private GameObject deathVFXPrefab;
     [SerializeField] private float knockBackTrust = 15f;
 
-    private int currentHealth;
+    public int currentHealth;
     private KnockBack knockBack;
     private Flash flash;
 
@@ -44,6 +44,8 @@ public class EnemyHealth : MonoBehaviour
     {
         if (currentHealth <= 0){
             Instantiate(deathVFXPrefab, transform.position, Quaternion.identity);
+            GetComponent<PickUpSpawner>().DropItems();
+            GetComponent<Animator>().SetTrigger("Death");
             Destroy(gameObject);
         }
     }

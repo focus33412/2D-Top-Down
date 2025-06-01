@@ -16,10 +16,13 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField] private Transform weaponCollider;
 
     private PlayerControls playerControls;
+    public PlayerControls Controls => playerControls;
+
     private Vector2 movement;
     private Vector2 dashDirection;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private KnockBack knockback;
     private Animator animator;
     private const string moveX = "Horizontal";  
     private const string moveY = "Vertical";     
@@ -32,50 +35,49 @@ public class PlayerController : Singleton<PlayerController>
     
 
 
-    protected override void Awake()
-    {
+    protected override void Awake() {
         base.Awake();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerControls = new PlayerControls();
+        knockback = GetComponent<KnockBack>();
     }
 
-    private void Start()
-    {
+    private void Start() {
         originalSpeed = moveSpeed;
         playerControls.Player.Sprint.performed += _ => Dash();
+        ActiveInventory.Instance.EquipStartingWeapon();
     }
-    private void OnEnable()
-    {
+
+    private void OnEnable() {
         playerControls.Enable();
     }
 
-    private void Update()
-    {
+    private void OnDisable() {
+        playerControls.Disable();
+    }
+
+    private void Update() {
         PlayerInput();
         Flip();
 
-        if (!isDashing)
-        {
-        Animate();
+        if (!isDashing) {
+            Animate();
         }
 
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         Vector2 movement = new Vector2(playerControls.Player.Move.ReadValue<Vector2>().x, playerControls.Player.Move.ReadValue<Vector2>().y);
-        
         Move(movement);
     }
 
-    public Transform GetWeaponCollider(){
+    public Transform GetWeaponCollider() {
         return weaponCollider;
     }
 
-    private void PlayerInput()
-    {
+    private void PlayerInput() {
         float moveX = playerControls.Player.Move.ReadValue<Vector2>().x;
         float moveY = playerControls.Player.Move.ReadValue<Vector2>().y;    
 
@@ -85,59 +87,51 @@ public class PlayerController : Singleton<PlayerController>
         movement.Normalize();
     }
 
-    private void Move(Vector2 movement)
-    {
+    private void Move(Vector2 movement) {
+        if (knockback.GettingKnockedBack || PlayerHealth.Instance.isDead) { return; }
+
         rb.MovePosition(rb.position + movement * (moveSpeed * Time.fixedDeltaTime));
     }
 
-    void Animate()
-    {
-        if (animator != null)
-        {
+    void Animate() {
+        if (animator != null) {
             animator.SetFloat(moveX, movement.x);
             animator.SetFloat(moveY, movement.y);
             animator.SetFloat(SPEED, movement.sqrMagnitude);
         }
     }
 
-    private void Flip()
-    {
-        if (movement.x > 0)
-        {
+    private void Flip() {
+        if (movement.x > 0) {
             spriteRenderer.flipX = false;
-            
         }
         
     }
 
-    private void Dash()
-    {
-    if (!isDashing && movement != Vector2.zero)
-    {
-        StartCoroutine(DashRoutine());
-    }
-    }
-
-    private IEnumerator DashRoutine()
-    {
-    isDashing = true;
-    dashDirection = movement;
-    moveSpeed *= dashSpeed;
-    if (dashDirection != Vector2.zero)
-    {
-    animator.SetFloat(moveX, dashDirection.x);
-    animator.SetFloat(moveY, dashDirection.y);
-    animator.SetBool("IsDashing", true);
-
-     
-    yield return new WaitForSeconds(dashClipLength);
+    private void Dash() {
+        if (!isDashing && movement != Vector2.zero && Stamina.Instance.CurrentStamina > 0) {
+            Stamina.Instance.UseStamina();
+            knockback.GetKnockedBack(transform, 10f);
+            StartCoroutine(DashRoutine());
+        }
     }
 
-    moveSpeed = originalSpeed;
-    animator.SetBool("IsDashing", false);
+    private IEnumerator DashRoutine() {
+        isDashing = true;
+        dashDirection = movement;
+        moveSpeed = dashSpeed;
+        if (dashDirection != Vector2.zero) {
+            animator.SetFloat(moveX, dashDirection.x);
+            animator.SetFloat(moveY, dashDirection.y);
+            animator.SetBool("IsDashing", true);
+            yield return new WaitForSeconds(dashClipLength);
+        }
 
-    yield return new WaitForSeconds(dashCooldown);
+        moveSpeed = originalSpeed;
+        animator.SetBool("IsDashing", false);
 
-    isDashing = false;
+        yield return new WaitForSeconds(dashCooldown);
+
+        isDashing = false;
     }
 }

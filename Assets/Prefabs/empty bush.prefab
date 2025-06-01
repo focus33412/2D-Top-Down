@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4402657277072429415}
   - component: {fileID: -4993904940573625580}
   - component: {fileID: 814869710631519132}
+  - component: {fileID: -2791883276487483794}
   m_Layer: 0
   m_Name: empty bush
   m_TagString: Untagged
@@ -139,3 +140,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destoyVFX: {fileID: 8753366095912960390, guid: 3606288e4cdebe2409c00a1f8521a30f, type: 3}
+--- !u!114 &-2791883276487483794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7824352049449918475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eefd7282d9ce8840aba781baea38ef4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldCoinPrefab: {fileID: 7694026307633664432, guid: 79a3176d9493f1c41a43604c76a80596, type: 3}
+  healthGlobe: {fileID: 7694026307633664432, guid: fdf8fb69410f8c74db890385e1101d06, type: 3}
+  staminaGlobe: {fileID: 7694026307633664432, guid: a13e2b459bcdf74489815e628eda9052, type: 3}

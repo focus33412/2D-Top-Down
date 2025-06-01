@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2316207983298881392}
   - component: {fileID: -5777791132367339954}
   - component: {fileID: 4407813420766070382}
+  - component: {fileID: 3398014579265207099}
   m_Layer: 0
   m_Name: Barell
   m_TagString: Untagged
@@ -139,3 +140,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destoyVFX: {fileID: 8753366095912960390, guid: 95a320cab6a702f45bc2266ab7fbccc3, type: 3}
+--- !u!114 &3398014579265207099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3668911905211815808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eefd7282d9ce8840aba781baea38ef4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldCoinPrefab: {fileID: 7694026307633664432, guid: 79a3176d9493f1c41a43604c76a80596, type: 3}
+  healthGlobe: {fileID: 7694026307633664432, guid: fdf8fb69410f8c74db890385e1101d06, type: 3}
+  staminaGlobe: {fileID: 7694026307633664432, guid: a13e2b459bcdf74489815e628eda9052, type: 3}
