@@ -2,20 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Класс управления затуханием спрайта
 public class SpriteFade : MonoBehaviour
 {
-    [SerializeField] private float fadeTime = .4f;
+    [SerializeField] private float fadeTime = .4f;               // Время затухания
 
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;                      // Компонент отрисовки спрайта
 
+    // Инициализация компонентов при создании
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    // Корутина плавного затухания
     public IEnumerator SlowFadeRoutine() {
         float elapsedTime = 0;
         float startValue = spriteRenderer.color.a;
 
+        // Плавное уменьшение прозрачности
         while (elapsedTime < fadeTime)
         {
             elapsedTime += Time.deltaTime;
@@ -24,6 +28,7 @@ public class SpriteFade : MonoBehaviour
             yield return null;
         }
 
+        // Уничтожение объекта после затухания
         Destroy(gameObject);
     }
 }

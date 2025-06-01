@@ -3,32 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Класс для управления затемнением и проявлением UI-экрана
 public class UIFade : Singleton<UIFade>
 {
-    [SerializeField] private Image fadeScreen;
-    [SerializeField] private float fadeSpeed = 1f;
+    [SerializeField] private Image fadeScreen;         // Ссылка на UI-элемент затемнения
+    [SerializeField] private float fadeSpeed = 1f;     // Скорость затемнения/проявления
 
-    private IEnumerator fadeRoutine;
+    private IEnumerator fadeRoutine;                   // Ссылка на текущую корутину
 
+    // Запуск затемнения экрана
     public void FadeToBlack() {
         if (fadeRoutine != null) {
             StopCoroutine(fadeRoutine);
         }
-
         fadeRoutine = FadeRoutine(1);
         StartCoroutine(fadeRoutine);
     }
 
+    // Запуск проявления экрана (убираем затемнение)
     public void FadeToClear() {
         if (fadeRoutine != null)
-            {
-                StopCoroutine(fadeRoutine);
-            }
-
-            fadeRoutine = FadeRoutine(0);
-            StartCoroutine(fadeRoutine);
+        {
+            StopCoroutine(fadeRoutine);
+        }
+        fadeRoutine = FadeRoutine(0);
+        StartCoroutine(fadeRoutine);
     }
 
+    // Корутина плавного изменения прозрачности экрана
     private IEnumerator FadeRoutine(float targetAlpha) {
         while (!Mathf.Approximately(fadeScreen.color.a, targetAlpha))
         {

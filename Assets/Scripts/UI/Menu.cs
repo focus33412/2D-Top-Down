@@ -3,16 +3,18 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// Класс управления главным меню
 public class Menu : MonoBehaviour
 {
-    [SerializeField] private GameObject pauseMenu; // Ссылка на меню паузы
-    [SerializeField] private GameObject activeInventory; // Ссылка на активный инвентарь
-    [SerializeField] private GameObject uiStats; // Ссылка на UI статистики
-    [SerializeField] private GameObject menuUI; // Ссылка на UI меню
+    [SerializeField] private GameObject pauseMenu;               // Ссылка на меню паузы
+    [SerializeField] private GameObject activeInventory;         // Ссылка на активный инвентарь
+    [SerializeField] private GameObject uiStats;                 // Ссылка на UI статистики
+    [SerializeField] private GameObject menuUI;                  // Ссылка на UI меню
 
+    // Инициализация при создании объекта
     private void Awake()
     {
-        // Проверяем наличие EventSystem
+        // Проверка и создание EventSystem при необходимости
         if (FindObjectOfType<EventSystem>() == null)
         {
             GameObject eventSystem = new GameObject("EventSystem");
@@ -20,33 +22,35 @@ public class Menu : MonoBehaviour
             eventSystem.AddComponent<StandaloneInputModule>();
         }
 
-        // Подписываемся на событие загрузки сцены
+        // Подписка на событие загрузки сцены
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    // Отписка от событий при уничтожении объекта
     private void OnDestroy()
     {
-        // Отписываемся от события при уничтожении объекта
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    // Обработка загрузки новой сцены
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Обновляем видимость UI при загрузке сцены
+        // Обновление видимости UI элементов
         UpdateUIVisibility();
     }
 
+    // Обновление видимости UI элементов
     private void UpdateUIVisibility()
     {
         bool isMenuScene = SceneManager.GetActiveScene().name == "Menu";
 
-        // Активируем/деактивируем элементы в зависимости от сцены
+        // Управление видимостью UI элементов в зависимости от сцены
         if (pauseMenu != null) pauseMenu.SetActive(!isMenuScene);
         if (activeInventory != null) activeInventory.SetActive(!isMenuScene);
         if (uiStats != null) uiStats.SetActive(!isMenuScene);
         if (menuUI != null) menuUI.SetActive(isMenuScene);
 
-        // Сбрасываем состояние паузы при переходе в меню
+        // Сброс состояния паузы при переходе в меню
         if (isMenuScene)
         {
             Time.timeScale = 1f;
@@ -61,12 +65,14 @@ public class Menu : MonoBehaviour
         }
     }
 
+    // Запуск игры
     public void Play()
     {
-        // Загружаем игровую сцену
+        // Загрузка следующей сцены
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    // Выход из игры
     public void Quit()
     {
         Debug.Log("Quit");

@@ -1,3 +1,4 @@
+// Интерфейс для всех типов врагов
 interface IEnemy {
-    public void Attack();
+    public void Attack();    // Метод атаки, который должен быть реализован каждым врагом
 }

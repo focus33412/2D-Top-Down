@@ -2,26 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Класс стреляющего врага, реализующий интерфейс IEnemy
 public class Shooter : MonoBehaviour, IEnemy
 {
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private float bulletMoveSpeed;
-    [SerializeField] private int burstCount;
-    [SerializeField] private int projectilesPerBurst;
-    [SerializeField][Range(0, 359)] private float angleSpread;
-    [SerializeField] private float startingDistance = 0.1f;
-    [SerializeField] private float timeBetweenBursts;
-    [SerializeField] private float restTime = 1f;
-    [SerializeField] private bool stagger;
-    [SerializeField] private bool oscillate;
+    [SerializeField] private GameObject bulletPrefab;            // Префаб пули
+    [SerializeField] private float bulletMoveSpeed;              // Скорость пули
+    [SerializeField] private int burstCount;                     // Количество залпов
+    [SerializeField] private int projectilesPerBurst;            // Количество пуль в залпе
+    [SerializeField][Range(0, 359)] private float angleSpread;   // Разброс угла стрельбы
+    [SerializeField] private float startingDistance = 0.1f;      // Начальная дистанция появления пуль
+    [SerializeField] private float timeBetweenBursts;            // Время между залпами
+    [SerializeField] private float restTime = 1f;                // Время отдыха между атаками
+    [SerializeField] private bool stagger;                       // Флаг последовательной стрельбы
+    [SerializeField] private bool oscillate;                     // Флаг колебания направления
 
-    private bool isShooting = false;
-    private EnemyHealth enemyHealth;
+    private bool isShooting = false;                            // Флаг стрельбы
+    private EnemyHealth enemyHealth;                            // Компонент здоровья
 
+    // Начальная настройка при старте
     private void Start() {
         enemyHealth = GetComponent<EnemyHealth>();
     }
 
+    // Валидация параметров в инспекторе
     private void OnValidate() {
         if (oscillate) { stagger = true; }
         if (!oscillate) { stagger = false; }
@@ -34,23 +37,25 @@ public class Shooter : MonoBehaviour, IEnemy
         if (bulletMoveSpeed <= 0) { bulletMoveSpeed = 0.1f; }
     }
 
+    // Метод атаки из интерфейса IEnemy
     public void Attack() {
         if (!isShooting) {
             if (enemyHealth != null && enemyHealth.currentHealth <= 4){
-                StartCoroutine(EnragedShootRoutine());
+                StartCoroutine(EnragedShootRoutine());           // Разъяренная атака при низком здоровье
             } else {
-                StartCoroutine(ShootRoutine());
+                StartCoroutine(ShootRoutine());                  // Обычная атака
             }
         }
     }
 
+    // Корутина разъяренной атаки
     private IEnumerator EnragedShootRoutine() {
         isShooting = true;
 
         float startAngle, currentAngle, angleStep, endAngle;
         float timeBetweenProjectiles = 0f;
 
-        // Установка параметров для разъяренной атаки
+        // Сохранение оригинальных параметров
         float originalAngleSpread = angleSpread;
         int originalBurstCount = burstCount;
         float originalTimeBetweenBursts = timeBetweenBursts;
@@ -58,6 +63,7 @@ public class Shooter : MonoBehaviour, IEnemy
         int originalProjectilesPerBurst = projectilesPerBurst;
         float originalBulletMoveSpeed = bulletMoveSpeed;
 
+        // Установка параметров для разъяренной атаки
         angleSpread = 359f;
         burstCount = 5;
         timeBetweenBursts = 0.3f;
@@ -67,6 +73,7 @@ public class Shooter : MonoBehaviour, IEnemy
 
         TargetConeOfInfluence(out startAngle, out currentAngle, out angleStep, out endAngle);
 
+        // Выполнение разъяренной атаки
         for (int i = 0; i < burstCount; i++) {
             for (int j = 0; j < projectilesPerBurst; j++) {
                 Vector2 pos = FindBulletSpawnPos(currentAngle);
@@ -104,15 +111,17 @@ public class Shooter : MonoBehaviour, IEnemy
         isShooting = false;
     }
 
+    // Корутина обычной атаки
     private IEnumerator ShootRoutine() {
         isShooting = true;
 
         float startAngle, currentAngle, angleStep, endAngle;
-        float timeBetweenProjectiles = 0f;//
+        float timeBetweenProjectiles = 0f;
 
         TargetConeOfInfluence(out startAngle, out currentAngle, out angleStep, out endAngle); 
         if (stagger) { timeBetweenProjectiles = timeBetweenBursts / projectilesPerBurst; } 
 
+        // Выполнение обычной атаки
         for (int i = 0; i < burstCount; i++) {
             if (oscillate) { 
                 TargetConeOfInfluence(out startAngle, out currentAngle, out angleStep, out endAngle); 
@@ -137,7 +146,7 @@ public class Shooter : MonoBehaviour, IEnemy
                     rb.linearVelocity = dir * bulletMoveSpeed;
                 }
 
-                newBullet.transform.right = dir; // Поворачиваем пулю для визуального эффекта
+                newBullet.transform.right = dir;
 
                 if (newBullet.TryGetComponent(out Projectile projectile))
                 {
@@ -148,7 +157,6 @@ public class Shooter : MonoBehaviour, IEnemy
 
                 if (stagger) { yield return new WaitForSeconds(timeBetweenProjectiles); } 
             }
-
 
             currentAngle = startAngle;
 
@@ -162,6 +170,7 @@ public class Shooter : MonoBehaviour, IEnemy
         isShooting = false;
     }
 
+    // Расчет конуса стрельбы
     private void TargetConeOfInfluence(out float startAngle, out float currentAngle, out float angleStep, out float endAngle) {
         Vector2 targetDirection = PlayerController.Instance.transform.position - transform.position;
         float targetAngle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
@@ -179,6 +188,7 @@ public class Shooter : MonoBehaviour, IEnemy
         }
     }
 
+    // Расчет позиции появления пули
     private Vector2 FindBulletSpawnPos(float currentAngle) {
         float x = transform.position.x + startingDistance * Mathf.Cos(currentAngle * Mathf.Deg2Rad);
         float y = transform.position.y + startingDistance * Mathf.Sin(currentAngle * Mathf.Deg2Rad);

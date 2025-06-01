@@ -2,26 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Класс навигации врага
 public class EnemyPathfinding : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float moveSpeed = 2f;               // Скорость движения
 
-    private Rigidbody2D rb;
-    private Vector2 moveDir;
-    private KnockBack knockback;
-    private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;                                     // Компонент физики
+    private Vector2 moveDir;                                     // Направление движения
+    private KnockBack knockback;                                 // Компонент отбрасывания
+    private SpriteRenderer spriteRenderer;                       // Компонент отрисовки спрайта
 
+    // Инициализация компонентов при создании
     private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
         knockback = GetComponent<KnockBack>();
         rb = GetComponent<Rigidbody2D>();
     }
 
+    // Обновление физики каждый фиксированный кадр
     private void FixedUpdate() {
-        if (knockback.GettingKnockedBack) { return; }
+        if (knockback.GettingKnockedBack) { return; }           // Пропуск при отбрасывании
 
         rb.MovePosition(rb.position + moveDir * (moveSpeed * Time.fixedDeltaTime));
 
+        // Отработка поворота спрайта
         if (moveDir.x < 0) {
             spriteRenderer.flipX = true;
         } else {
@@ -29,14 +33,17 @@ public class EnemyPathfinding : MonoBehaviour
         }
     }
 
+    // Установка направления движения
     public void MoveTo(Vector2 targetPosition) {
         moveDir = targetPosition;
     }
 
+    // Остановка движения
     public void StopMoving() {
         moveDir = Vector3.zero;
     }
 
+    // Проверка движения
     public bool IsMoving() {
         return moveDir.magnitude > 0.1f;
     }

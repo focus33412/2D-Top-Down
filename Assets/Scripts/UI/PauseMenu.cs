@@ -1,32 +1,35 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Класс управления меню паузы
 public class PauseMenu : MonoBehaviour
 {
-    public bool PauseGame;
-    public GameObject pauseMenu;
+    public bool PauseGame;                                       // Флаг состояния паузы
+    public GameObject pauseMenu;                                 // Панель меню паузы
 
+    // Инициализация при создании объекта
     private void Awake()
     {
-        // Подписываемся на событие загрузки сцены
+        // Подписка на событие загрузки сцены
         SceneManager.sceneLoaded += OnSceneLoaded;
         
-        // Скрываем панель паузы при создании объекта
+        // Скрытие панели паузы при создании
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
     }
 
+    // Отписка от событий при уничтожении объекта
     private void OnDestroy()
     {
-        // Отписываемся от события при уничтожении объекта
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    // Обработка загрузки новой сцены
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Принудительно скрываем панель паузы при загрузке любой сцены
+        // Скрытие панели паузы и сброс времени
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
@@ -35,25 +38,29 @@ public class PauseMenu : MonoBehaviour
         PauseGame = false;
     }
 
+    // Начальная настройка при старте
     private void Start()
     {
-        // Скрываем панель паузы при старте
+        // Скрытие панели паузы
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
     }
 
+    // Обработка активации объекта
     private void OnEnable()
     {
-        // Скрываем панель паузы при активации объекта
+        // Скрытие панели паузы
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
     }
 
+    // Обновление каждый кадр
     void Update() {
+        // Проверка нажатия клавиши Escape
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (PauseGame) {
                 Resume();
@@ -63,6 +70,7 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    // Возобновление игры
     public void Resume() {
         if (pauseMenu != null)
         {
@@ -72,6 +80,7 @@ public class PauseMenu : MonoBehaviour
         PauseGame = false;
     }
 
+    // Постановка игры на паузу
     public void Pause() {
         if (pauseMenu != null)
         {
@@ -81,8 +90,9 @@ public class PauseMenu : MonoBehaviour
         PauseGame = true;
     }  
 
+    // Загрузка главного меню
     public void LoadMenu() {
-        // Скрываем панель паузы
+        // Скрытие панели паузы и сброс времени
         if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
@@ -90,7 +100,7 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         PauseGame = false;
         
-        // Загружаем меню
+        // Загрузка сцены меню
         SceneManager.LoadScene("Menu");
     }
 }

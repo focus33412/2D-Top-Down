@@ -1,0 +1,1810 @@
+СТРУКТУРА ПАПОК SCRIPTS
+======================
+
+Scripts/
+├── Managment/                    # Скрипты управления
+│   ├── AreaEntrance.cs          # Управление входом в новую зону/локацию
+│   ├── AreaExit.cs              # Управление выходом из зоны
+│   ├── BaseSingleton.cs         # Базовый класс для глобальных синглтонов
+│   ├── CameraController.cs      # Управление виртуальной камерой
+│   ├── Indestructible.cs        # Маркер для неразрушаемых объектов
+│   ├── SceneManagement.cs       # Управление переходами между сценами
+│   ├── Singleton.cs             # Реализация паттерна Singleton
+│   └── UIFade.cs                # Управление затемнением UI
+│
+├── Player/                      # Скрипты игрока
+│   ├── PlayerController.cs      # Основное управление персонажем
+│   └── PlayerHealth.cs          # Управление здоровьем игрока
+│
+├── Enemies/                     # Скрипты врагов
+│   ├── Crab.cs                  # Реализация врага-краба
+│   ├── EnemyAI.cs               # Искусственный интеллект врагов
+│   ├── EnemyHealth.cs           # Управление здоровьем врагов
+│   ├── EnemyPathfinding.cs      # Система поиска пути для врагов
+│   ├── EnemySpawner.cs          # Система спавна врагов
+│   ├── IEnemy.cs                # Интерфейс для всех типов врагов
+│   └── Shooter.cs               # Стреляющий враг
+│
+├── Weapon/                      # Скрипты оружия
+│   ├── IWeapon.cs               # Интерфейс оружия
+│   ├── WeaponInfo.cs            # Класс информации об оружии
+│   └── Sword.cs                 # Реализация меча
+│
+├── UI/                          # Скрипты пользовательского интерфейса
+│   ├── InventorySlot.cs         # Слот инвентаря
+│   ├── MouseFollow.cs           # Поворот объекта в сторону курсора
+│   ├── ActiveInventory.cs       # Управление активным инвентарем
+│   ├── Menu.cs                  # Управление главным меню
+│   └── PauseMenu.cs             # Управление меню паузы
+│
+└── Misc/                        # Различные вспомогательные скрипты
+    ├── Flash.cs                 # Эффект вспышки при получении урона
+    ├── Parallax.cs              # Эффект параллакса фона
+    ├── ScreenShakeManager.cs    # Управление тряской экрана
+    └── Transparent Detection.cs  # Управление прозрачностью объектов
+
+---Managment---
+
+-AreaEntrance- (Управление входом в новую зону/локацию)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для управления входом в новую зону/локацию
+public class AreaEntrance : MonoBehaviour
+{
+    [SerializeField] private string transitionName; // Имя перехода для идентификации
+
+    // Запуск инициализации с задержкой
+    private void Start() {
+        StartCoroutine(InitializeWithDelay());
+    }
+
+    // Корутина для инициализации после небольшой задержки
+    private IEnumerator InitializeWithDelay()
+    {
+        // Даем время на инициализацию всех компонентов
+        yield return new WaitForSeconds(0.1f);
+
+        // Проверка наличия необходимых синглтонов
+        if (SceneManagement.Instance == null) {
+            Debug.LogError("SceneManagement.Instance is null!");
+            yield break;
+        }
+
+        if (PlayerController.Instance == null) {
+            Debug.LogError("PlayerController.Instance is null!");
+            yield break;
+        }
+
+        if (CameraController.Instance == null) {
+            Debug.LogError("CameraController.Instance is null!");
+            yield break;
+        }
+
+        // Если имя перехода совпадает, перемещаем игрока и камеру
+        if (transitionName == SceneManagement.Instance.SceneTransitionName) {
+            PlayerController.Instance.transform.position = this.transform.position;
+            CameraController.Instance.SetPlayerCameraFollow();
+            UIFade.Instance.FadeToClear();
+        }
+    }
+}
+```
+
+-AreaExit- (Управление выходом из зоны)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+// Класс управления переходом между зонами
+public class AreaExit : MonoBehaviour
+{
+    [SerializeField] private string sceneToLoad;        // Имя сцены для загрузки
+    [SerializeField] private string sceneTransitionName; // Имя перехода для анимации
+
+    // Обработка входа игрока в зону перехода
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.GetComponent<PlayerController>()) {
+            SceneManagement.Instance.SetTransitionName(sceneTransitionName);
+            UIFade.Instance.FadeToBlack();
+            StartCoroutine(LoadSceneRoutine());
+        }
+    }
+
+    // Корутина загрузки новой сцены
+    private IEnumerator LoadSceneRoutine() {
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(sceneToLoad);
+    }
+}
+```
+
+-BaseSingleton- (Базовый класс для глобальных синглтонов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Базовый класс для глобальных синглтонов, которые должны существовать на протяжении всей игры
+public abstract class BaseSingleton<T> : MonoBehaviour where T : MonoBehaviour
+{
+    // Этот класс служит основой для глобальных менеджеров, которые должны существовать между сценами
+    // и быть доступными из любого места
+}
+```
+
+-CameraController- (Управление виртуальной камерой)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Cinemachine;
+
+// Класс для управления виртуальной камерой и следованием за игроком
+public class CameraController : Singleton<CameraController>
+{
+    private CinemachineVirtualCamera cinemachineVirtualCamera; // Ссылка на виртуальную камеру
+
+    // Вызывается при старте сцены
+    private void Start() {
+        SetPlayerCameraFollow();
+    }
+
+    // Устанавливает слежение камеры за игроком
+    public void SetPlayerCameraFollow() {
+        cinemachineVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        cinemachineVirtualCamera.Follow = PlayerController.Instance.transform;
+    }
+}
+```
+
+-Indestructible- (Маркер для неразрушаемых объектов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для объектов, которые не могут быть уничтожены
+public class Indestructible : MonoBehaviour
+{
+    // Используется как маркер для объектов, которые должны оставаться на сцене
+    // Этот класс не требует дополнительной логики,
+    // так как используется только для идентификации неразрушаемых объектов
+}
+```
+
+-SceneManagement- (Управление переходами между сценами)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для управления переходами между сценами
+public class SceneManagement : Singleton<SceneManagement>
+{
+    public string SceneTransitionName { get; private set; } // Имя текущего перехода между сценами
+
+    // Устанавливает имя перехода для последующей загрузки сцены
+    public void SetTransitionName(string sceneTransitionName) {
+        this.SceneTransitionName = sceneTransitionName;
+    }
+}
+```
+
+-Singleton- (Реализация паттерна Singleton)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Базовый класс для реализации паттерна Singleton в Unity
+public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+{
+    private static T instance; // Единственный экземпляр класса
+
+    public static T Instance // Публичный доступ к экземпляру
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<T>();
+                if (instance == null)
+                {
+                    GameObject obj = new GameObject();
+                    obj.name = typeof(T).Name;
+                    instance = obj.AddComponent<T>();
+                }
+            }
+            return instance;
+        }
+    }
+
+    // Инициализация при создании объекта
+    protected virtual void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this as T;
+            if (transform.parent == null)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+}
+```
+
+-UIFade- (Управление затемнением UI)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+// Класс для управления затемнением и проявлением UI-экрана
+public class UIFade : Singleton<UIFade>
+{
+    [SerializeField] private Image fadeScreen;         // Ссылка на UI-элемент затемнения
+    [SerializeField] private float fadeSpeed = 1f;     // Скорость затемнения/проявления
+
+    private IEnumerator fadeRoutine;                   // Ссылка на текущую корутину
+
+    // Запуск затемнения экрана
+    public void FadeToBlack() {
+        if (fadeRoutine != null) {
+            StopCoroutine(fadeRoutine);
+        }
+        fadeRoutine = FadeRoutine(1);
+        StartCoroutine(fadeRoutine);
+    }
+
+    // Запуск проявления экрана (убираем затемнение)
+    public void FadeToClear() {
+        if (fadeRoutine != null)
+        {
+            StopCoroutine(fadeRoutine);
+        }
+        fadeRoutine = FadeRoutine(0);
+        StartCoroutine(fadeRoutine);
+    }
+
+    // Корутина плавного изменения прозрачности экрана
+    private IEnumerator FadeRoutine(float targetAlpha) {
+        while (!Mathf.Approximately(fadeScreen.color.a, targetAlpha))
+        {
+            float alpha = Mathf.MoveTowards(fadeScreen.color.a, targetAlpha, fadeSpeed * Time.deltaTime);
+            fadeScreen.color = new Color(fadeScreen.color.r, fadeScreen.color.g, fadeScreen.color.b, alpha);
+            yield return null;
+        }
+    }
+}
+```
+
+---Player---
+
+-PlayerController- (Основное управление персонажем)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления персонажем игрока
+public class PlayerController : Singleton<PlayerController>
+{
+    [SerializeField] private float moveSpeed = 5f;     // Скорость движения
+    [SerializeField] private float dashSpeed = 8f;     // Скорость рывка
+    [SerializeField] private float dashDuration = 0.2f; // Длительность рывка
+    [SerializeField] private float dashCooldown = 1f;   // Время перезарядки рывка
+
+    private Rigidbody2D rb;                           // Компонент физики
+    private Vector2 moveDirection;                     // Направление движения
+    private bool canDash = true;                      // Флаг возможности рывка
+
+    // Инициализация компонентов
+    private void Awake() {
+        base.Awake();
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    // Обработка ввода каждый кадр
+    private void Update() {
+        ProcessInputs();
+    }
+
+    // Применение движения в FixedUpdate
+    private void FixedUpdate() {
+        Move();
+    }
+
+    // Обработка ввода пользователя
+    private void ProcessInputs() {
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
+
+        moveDirection = new Vector2(moveX, moveY).normalized;
+
+        if (Input.GetKeyDown(KeyCode.Space) && canDash) {
+            StartCoroutine(Dash());
+        }
+    }
+
+    // Применение движения к персонажу
+    private void Move() {
+        rb.velocity = moveDirection * moveSpeed;
+    }
+
+    // Корутина рывка
+    private IEnumerator Dash() {
+        canDash = false;
+        float originalSpeed = moveSpeed;
+        moveSpeed = dashSpeed;
+        yield return new WaitForSeconds(dashDuration);
+        moveSpeed = originalSpeed;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
+}
+```
+
+-PlayerHealth- (Управление здоровьем игрока)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления здоровьем игрока
+public class PlayerHealth : MonoBehaviour
+{
+    [SerializeField] private int maxHealth = 100;      // Максимальное здоровье
+    [SerializeField] private float invincibilityDuration = 1f; // Длительность неуязвимости
+
+    private int currentHealth;                         // Текущее здоровье
+    private bool isInvincible;                         // Флаг неуязвимости
+    private Flash flashEffect;                         // Эффект вспышки
+
+    // Инициализация при создании
+    private void Start() {
+        currentHealth = maxHealth;
+        flashEffect = GetComponent<Flash>();
+    }
+
+    // Получение урона
+    public void TakeDamage(int damage) {
+        if (isInvincible) return;
+
+        currentHealth -= damage;
+        if (flashEffect) flashEffect.FlashRoutine();
+        StartCoroutine(InvincibilityRoutine());
+
+        if (currentHealth <= 0) {
+            Die();
+        }
+    }
+
+    // Смерть игрока
+    private void Die() {
+        // Логика смерти
+        Debug.Log("Player died!");
+    }
+
+    // Корутина неуязвимости
+    private IEnumerator InvincibilityRoutine() {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibilityDuration);
+        isInvincible = false;
+    }
+}
+```
+
+---Enemies---
+
+-Shooter- (Стреляющий враг)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления стреляющим врагом
+public class Shooter : MonoBehaviour
+{
+    [SerializeField] private GameObject projectilePrefab; // Префаб снаряда
+    [SerializeField] private float shootCooldown = 2f;    // Время между выстрелами
+    [SerializeField] private float projectileSpeed = 5f;   // Скорость снаряда
+    [SerializeField] private Transform firePoint;          // Точка выстрела
+
+    private bool canShoot = true;                         // Флаг возможности стрельбы
+    private PlayerController player;                       // Ссылка на игрока
+
+    // Инициализация при создании
+    private void Start() {
+        player = PlayerController.Instance;
+    }
+
+    // Обновление каждый кадр
+    private void Update() {
+        if (canShoot && player != null) {
+            StartCoroutine(Shoot());
+        }
+    }
+
+    // Корутина стрельбы
+    private IEnumerator Shoot() {
+        canShoot = false;
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
+        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+        if (rb != null) {
+            rb.velocity = firePoint.right * projectileSpeed;
+        }
+        yield return new WaitForSeconds(shootCooldown);
+        canShoot = true;
+    }
+}
+```
+
+---Weapon---
+
+-IWeapon- (Интерфейс для всех типов оружия)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Интерфейс для всех типов оружия
+public interface IWeapon
+{
+    void Attack();
+    void StopAttack();
+}
+```
+
+-WeaponInfo- (Класс информации об оружии)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для хранения информации об оружии
+public class WeaponInfo : MonoBehaviour
+{
+    public GameObject weaponPrefab;        // Префаб оружия
+    public int weaponDamage;               // Урон оружия
+    public float weaponCooldown;           // Время перезарядки
+}
+```
+
+-Sword- (Реализация меча)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс реализации меча
+public class Sword : MonoBehaviour, IWeapon
+{
+    [SerializeField] private float attackDamage = 20f;     // Урон от атаки
+    [SerializeField] private float attackRange = 2f;       // Дальность атаки
+    [SerializeField] private LayerMask enemyLayer;         // Слой врагов
+
+    private bool isAttacking;                              // Флаг атаки
+
+    // Реализация атаки
+    public void Attack() {
+        if (!isAttacking) {
+            isAttacking = true;
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+            foreach (Collider2D enemy in hitEnemies) {
+                enemy.GetComponent<PlayerHealth>()?.TakeDamage((int)attackDamage);
+            }
+        }
+    }
+
+    // Остановка атаки
+    public void StopAttack() {
+        isAttacking = false;
+    }
+}
+```
+
+-Bow- (Реализация лука)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс реализации лука
+public class Bow : MonoBehaviour, IWeapon
+{
+    [SerializeField] private GameObject arrowPrefab;        // Префаб стрелы
+    [SerializeField] private Transform firePoint;           // Точка выстрела
+    [SerializeField] private float arrowSpeed = 20f;        // Скорость стрелы
+
+    private bool isAttacking;                              // Флаг атаки
+
+    // Реализация атаки
+    public void Attack() {
+        if (!isAttacking) {
+            isAttacking = true;
+            GameObject arrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
+            Rigidbody2D rb = arrow.GetComponent<Rigidbody2D>();
+            if (rb != null) {
+                rb.velocity = firePoint.right * arrowSpeed;
+            }
+        }
+    }
+
+    // Остановка атаки
+    public void StopAttack() {
+        isAttacking = false;
+    }
+}
+```
+
+-Staff- (Реализация посоха)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс реализации магического посоха
+public class Staff : MonoBehaviour, IWeapon
+{
+    [SerializeField] private GameObject magicProjectilePrefab;  // Префаб магического снаряда
+    [SerializeField] private Transform firePoint;               // Точка выстрела
+    [SerializeField] private float projectileSpeed = 15f;       // Скорость снаряда
+
+    private bool isAttacking;                                  // Флаг атаки
+
+    // Реализация атаки
+    public void Attack() {
+        if (!isAttacking) {
+            isAttacking = true;
+            GameObject projectile = Instantiate(magicProjectilePrefab, firePoint.position, firePoint.rotation);
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb != null) {
+                rb.velocity = firePoint.right * projectileSpeed;
+            }
+        }
+    }
+
+    // Остановка атаки
+    public void StopAttack() {
+        isAttacking = false;
+    }
+}
+```
+
+-MagicLaser- (Реализация магического лазера)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс реализации магического лазера
+public class MagicLaser : MonoBehaviour, IWeapon
+{
+    [SerializeField] private LineRenderer lineRenderer;         // Компонент отрисовки линии
+    [SerializeField] private float laserDuration = 0.5f;        // Длительность лазера
+    [SerializeField] private float laserDamage = 30f;           // Урон лазера
+    [SerializeField] private LayerMask enemyLayer;              // Слой врагов
+
+    private bool isAttacking;                                  // Флаг атаки
+
+    // Реализация атаки
+    public void Attack() {
+        if (!isAttacking) {
+            isAttacking = true;
+            StartCoroutine(LaserRoutine());
+        }
+    }
+
+    // Корутина работы лазера
+    private IEnumerator LaserRoutine() {
+        lineRenderer.enabled = true;
+        
+        // Проверка попадания
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 100f, enemyLayer);
+        if (hit.collider != null) {
+            lineRenderer.SetPosition(1, hit.point);
+            hit.collider.GetComponent<EnemyHealth>()?.TakeDamage((int)laserDamage);
+        } else {
+            lineRenderer.SetPosition(1, transform.position + transform.right * 100f);
+        }
+
+        yield return new WaitForSeconds(laserDuration);
+        lineRenderer.enabled = false;
+        isAttacking = false;
+    }
+
+    // Остановка атаки
+    public void StopAttack() {
+        isAttacking = false;
+        lineRenderer.enabled = false;
+    }
+}
+```
+
+-SpriteFade- (Класс управления прозрачностью спрайта)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для управления прозрачностью спрайта
+public class SpriteFade : MonoBehaviour
+{
+    [SerializeField] private float fadeSpeed = 1f;              // Скорость изменения прозрачности
+    [SerializeField] private float targetAlpha = 0f;            // Целевая прозрачность
+
+    private SpriteRenderer spriteRenderer;                      // Компонент отрисовки спрайта
+    private Color startColor;                                   // Начальный цвет
+
+    // Инициализация компонентов
+    private void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        startColor = spriteRenderer.color;
+    }
+
+    // Запуск эффекта прозрачности
+    public void StartFade() {
+        StartCoroutine(FadeRoutine());
+    }
+
+    // Корутина изменения прозрачности
+    private IEnumerator FadeRoutine() {
+        float currentAlpha = spriteRenderer.color.a;
+        while (!Mathf.Approximately(currentAlpha, targetAlpha)) {
+            currentAlpha = Mathf.MoveTowards(currentAlpha, targetAlpha, fadeSpeed * Time.deltaTime);
+            spriteRenderer.color = new Color(startColor.r, startColor.g, startColor.b, currentAlpha);
+            yield return null;
+        }
+    }
+}
+```
+
+---Misc---
+
+-Flash- (Эффект вспышки при получении урона)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления эффектом вспышки при получении урона
+public class Flash : MonoBehaviour
+{
+    [SerializeField] private Material whiteFlashMaterial;  // Материал белой вспышки
+    [SerializeField] private float restoreDefaultMaterialTime = 0.2f; // Время восстановления исходного материала
+
+    private Material defaultMaterial;                      // Исходный материал объекта
+    private SpriteRenderer spriteRenderer;                 // Компонент отрисовки спрайта
+
+    // Инициализация компонентов при создании
+    private void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        defaultMaterial = spriteRenderer.material;
+    }
+
+    // Получение времени восстановления материала
+    public float GetRestoreMaterialTime() {
+        return restoreDefaultMaterialTime;
+    }
+
+    // Корутина эффекта вспышки
+    public IEnumerator FlashRoutine() {
+        spriteRenderer.material = whiteFlashMaterial;
+        yield return new WaitForSeconds(restoreDefaultMaterialTime);
+        spriteRenderer.material = defaultMaterial;
+    }
+}
+```
+
+-Parallax- (Эффект параллакса фона)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для реализации эффекта параллакса фона
+public class Parallax : MonoBehaviour
+{
+    [SerializeField] private float parallaxOffset = -0.15f; // Коэффициент смещения для параллакса
+
+    private Camera cam;                // Ссылка на основную камеру
+    private Vector2 startPos;          // Начальная позиция объекта
+    private Vector2 travel => (Vector2)cam.transform.position - startPos; // Вектор смещения камеры относительно старта
+
+    // Инициализация камеры
+    private void Awake() {
+        cam = Camera.main;
+    }
+
+    // Сохраняем стартовую позицию объекта
+    private void Start() {
+        startPos = transform.position;
+    }
+
+    // Обновляем позицию объекта с учетом параллакса
+    private void FixedUpdate() {
+        transform.position = startPos + travel * parallaxOffset;
+    }
+}
+```
+
+-ScreenShakeManager- (Управление тряской экрана)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Cinemachine;
+
+// Класс для управления эффектом тряски экрана
+public class ScreenShakeManager : Singleton<ScreenShakeManager>
+{
+    private CinemachineImpulseSource source; // Источник импульса для тряски
+
+    // Инициализация компонента импульса
+    protected override void Awake() {
+        base.Awake();
+        source = GetComponent<CinemachineImpulseSource>();
+    }
+
+    // Метод для вызова тряски экрана
+    public void ShakeScreen() {
+        source.GenerateImpulse();
+    }
+}
+```
+
+-Transparent Detection- (Управление прозрачностью объектов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+
+// Класс для управления прозрачностью объектов при пересечении с игроком
+public class TransparentDetection : MonoBehaviour
+{
+    [Range(0, 1)]
+    [SerializeField] private float transparencyAmount = 0.8f; // Степень прозрачности при пересечении
+    [SerializeField] private float fadeTime = .4f;             // Время плавного перехода прозрачности
+
+    private SpriteRenderer spriteRenderer; // Ссылка на компонент SpriteRenderer (если есть)
+    private Tilemap tilemap;               // Ссылка на компонент Tilemap (если есть)
+
+    // Инициализация компонентов
+    private void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        tilemap = GetComponent<Tilemap>();
+    }
+
+    // Срабатывает при входе другого объекта в триггер
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (!gameObject.activeInHierarchy) return;
+        
+        // Проверяем, является ли объект игроком
+        if (other.gameObject.GetComponent<PlayerController>()) {
+            if (spriteRenderer) {
+                // Запускаем корутину плавного изменения прозрачности для SpriteRenderer
+                StartCoroutine(FadeRoutine(spriteRenderer, fadeTime, spriteRenderer.color.a, transparencyAmount));
+            } else if (tilemap) {
+                // Запускаем корутину плавного изменения прозрачности для Tilemap
+                StartCoroutine(FadeRoutine(tilemap, fadeTime, tilemap.color.a, transparencyAmount));
+            }
+        }
+    }
+
+    // Срабатывает при выходе объекта из триггера
+    private void OnTriggerExit2D(Collider2D other) {
+        if (!gameObject.activeInHierarchy) return;
+        
+        // Проверяем, является ли объект игроком
+        if (other.gameObject.GetComponent<PlayerController>())
+        {
+            if (spriteRenderer) {
+                // Возвращаем прозрачность к исходной (полностью видимый)
+                StartCoroutine(FadeRoutine(spriteRenderer, fadeTime, spriteRenderer.color.a, 1f));
+            } else if (tilemap) {
+                StartCoroutine(FadeRoutine(tilemap, fadeTime, tilemap.color.a, 1f));
+            }
+        }
+    }
+
+    // Корутина плавного изменения прозрачности для SpriteRenderer
+    private IEnumerator FadeRoutine(SpriteRenderer spriteRenderer, float fadeTime, float startValue, float targetTransparency) {
+        float elapsedTime = 0;     
+        while (elapsedTime < fadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(startValue, targetTransparency, elapsedTime / fadeTime);
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, newAlpha);
+            yield return null;
+        }
+    }
+
+    // Корутина плавного изменения прозрачности для Tilemap
+    private IEnumerator FadeRoutine(Tilemap tilemap, float fadeTime, float startValue, float targetTransparency)
+    {
+        float elapsedTime = 0;
+        while (elapsedTime < fadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float newAlpha = Mathf.Lerp(startValue, targetTransparency, elapsedTime / fadeTime);
+            tilemap.color = new Color(tilemap.color.r, tilemap.color.g, tilemap.color.b, newAlpha);
+            yield return null;
+        }
+    }
+}
+```
+
+---Enemies---
+
+-IEnemy- (Интерфейс для всех типов врагов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Интерфейс для всех типов врагов
+public interface IEnemy
+{
+    void TakeDamage(int damage);
+}
+```
+
+-Crab- (Реализация врага-краба)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс реализации врага-краба
+public class Crab : MonoBehaviour, IEnemy
+{
+    [SerializeField] private float moveSpeed = 3f;        // Скорость движения
+    [SerializeField] private float attackRange = 1.5f;    // Дальность атаки
+    [SerializeField] private int attackDamage = 10;       // Урон от атаки
+
+    private EnemyAI ai;                                   // Компонент ИИ
+    private EnemyHealth health;                           // Компонент здоровья
+    private bool canAttack = true;                        // Флаг возможности атаки
+
+    // Инициализация компонентов
+    private void Start() {
+        ai = GetComponent<EnemyAI>();
+        health = GetComponent<EnemyHealth>();
+    }
+
+    // Получение урона
+    public void TakeDamage(int damage) {
+        health.TakeDamage(damage);
+    }
+
+    // Атака игрока
+    private void Attack() {
+        if (!canAttack) return;
+
+        Collider2D player = Physics2D.OverlapCircle(transform.position, attackRange, LayerMask.GetMask("Player"));
+        if (player != null) {
+            player.GetComponent<PlayerHealth>()?.TakeDamage(attackDamage);
+            StartCoroutine(AttackCooldown());
+        }
+    }
+
+    // Корутина перезарядки атаки
+    private IEnumerator AttackCooldown() {
+        canAttack = false;
+        yield return new WaitForSeconds(1f);
+        canAttack = true;
+    }
+}
+```
+
+-EnemyAI- (Искусственный интеллект врагов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления ИИ врагов
+public class EnemyAI : MonoBehaviour
+{
+    [SerializeField] private float detectionRange = 5f;   // Дальность обнаружения игрока
+    [SerializeField] private float attackRange = 1.5f;    // Дальность атаки
+    [SerializeField] private float moveSpeed = 3f;        // Скорость движения
+
+    private Transform player;                             // Ссылка на игрока
+    private Rigidbody2D rb;                              // Компонент физики
+    private Vector2 moveDirection;                        // Направление движения
+    private bool isPlayerInRange;                         // Флаг нахождения игрока в зоне видимости
+
+    // Инициализация компонентов
+    private void Start() {
+        rb = GetComponent<Rigidbody2D>();
+        player = PlayerController.Instance.transform;
+    }
+
+    // Обновление каждый кадр
+    private void Update() {
+        CheckPlayerDistance();
+        if (isPlayerInRange) {
+            MoveTowardsPlayer();
+        }
+    }
+
+    // Проверка расстояния до игрока
+    private void CheckPlayerDistance() {
+        if (player == null) return;
+        float distance = Vector2.Distance(transform.position, player.position);
+        isPlayerInRange = distance <= detectionRange;
+    }
+
+    // Движение к игроку
+    private void MoveTowardsPlayer() {
+        if (player == null) return;
+        moveDirection = (player.position - transform.position).normalized;
+        rb.velocity = moveDirection * moveSpeed;
+    }
+}
+```
+
+-EnemyHealth- (Управление здоровьем врагов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления здоровьем врагов
+public class EnemyHealth : MonoBehaviour
+{
+    [SerializeField] private int maxHealth = 50;          // Максимальное здоровье
+    [SerializeField] private GameObject deathEffect;       // Эффект смерти
+
+    private int currentHealth;                            // Текущее здоровье
+    private Flash flashEffect;                            // Эффект вспышки
+
+    // Инициализация при создании
+    private void Start() {
+        currentHealth = maxHealth;
+        flashEffect = GetComponent<Flash>();
+    }
+
+    // Получение урона
+    public void TakeDamage(int damage) {
+        currentHealth -= damage;
+        if (flashEffect) flashEffect.FlashRoutine();
+
+        if (currentHealth <= 0) {
+            Die();
+        }
+    }
+
+    // Смерть врага
+    private void Die() {
+        if (deathEffect != null) {
+            Instantiate(deathEffect, transform.position, Quaternion.identity);
+        }
+        Destroy(gameObject);
+    }
+}
+```
+
+-EnemyPathfinding- (Система поиска пути для врагов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+// Класс для поиска пути врагами
+public class EnemyPathfinding : MonoBehaviour
+{
+    [SerializeField] private float updatePathInterval = 0.5f; // Интервал обновления пути
+
+    private NavMeshAgent agent;                           // Компонент навигации
+    private Transform target;                             // Цель для следования
+
+    // Инициализация компонентов
+    private void Start() {
+        agent = GetComponent<NavMeshAgent>();
+        target = PlayerController.Instance.transform;
+        StartCoroutine(UpdatePathRoutine());
+    }
+
+    // Корутина обновления пути
+    private IEnumerator UpdatePathRoutine() {
+        while (true) {
+            if (target != null) {
+                agent.SetDestination(target.position);
+            }
+            yield return new WaitForSeconds(updatePathInterval);
+        }
+    }
+}
+```
+
+-EnemySpawner- (Система спавна врагов)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для спавна врагов
+public class EnemySpawner : MonoBehaviour
+{
+    [SerializeField] private GameObject[] enemyPrefabs;    // Префабы врагов
+    [SerializeField] private float spawnInterval = 3f;     // Интервал спавна
+    [SerializeField] private int maxEnemies = 5;           // Максимальное количество врагов
+    [SerializeField] private float spawnRadius = 5f;       // Радиус спавна
+
+    private List<GameObject> activeEnemies;                // Список активных врагов
+
+    // Инициализация при создании
+    private void Start() {
+        activeEnemies = new List<GameObject>();
+        StartCoroutine(SpawnRoutine());
+    }
+
+    // Корутина спавна врагов
+    private IEnumerator SpawnRoutine() {
+        while (true) {
+            if (activeEnemies.Count < maxEnemies) {
+                SpawnEnemy();
+            }
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    // Спавн одного врага
+    private void SpawnEnemy() {
+        Vector2 randomPosition = Random.insideUnitCircle * spawnRadius;
+        Vector3 spawnPosition = transform.position + new Vector3(randomPosition.x, randomPosition.y, 0);
+        
+        GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+        GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        
+        activeEnemies.Add(enemy);
+        enemy.GetComponent<EnemyHealth>().OnDeath += () => activeEnemies.Remove(enemy);
+    }
+}
+
+-Destructible- (Класс разрушаемого объекта)
+```csharp
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+// Класс разрушаемого объекта
+public class Destructible : MonoBehaviour
+{
+    [SerializeField] private GameObject destoyVFX;               // Эффект при разрушении
+
+    // Обработка столкновения с источником урона
+    private void OnTriggerEnter2D(Collider2D other) 
+    {
+        // Проверка на столкновение с источником урона или снарядом
+        if (other.gameObject.GetComponent<DamageSource>() || other.gameObject.GetComponent<Projectile>()) {
+            GetComponent<PickUpSpawner>().DropItems();          // Выпадение предметов
+            Instantiate(destoyVFX, transform.position, Quaternion.identity);  // Создание эффекта
+            Destroy(gameObject);                                // Уничтожение объекта
+        }
+    }
+}
+
+-EconomyManager- (Класс управления экономикой игры)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+// Класс управления экономикой игры, наследуется от Singleton для глобального доступа
+public class EconomyManager : Singleton<EconomyManager>
+{
+    private TMP_Text goldText;                                  // Текст отображения золота
+    private int currentGold = 0;                                // Текущее количество золота
+
+    const string COIN_AMOUNT_TEXT = "Gold Amount Text";         // Имя объекта с текстом золота
+
+    // Обновление количества золота
+    public void UpdateCurrentGold() {
+        currentGold += 1;
+
+        // Получение компонента текста при необходимости
+        if (goldText == null) {
+            goldText = GameObject.Find(COIN_AMOUNT_TEXT).GetComponent<TMP_Text>();
+        }
+
+        // Обновление отображения золота
+        goldText.text = currentGold.ToString("D3");
+    }
+}
+
+-KnockBack- (Класс управления отбрасыванием объектов)
+```csharp
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+// Класс управления отбрасыванием объектов
+public class KnockBack : MonoBehaviour
+{
+    public bool GettingKnockedBack { get; private set; }        // Флаг состояния отбрасывания
+
+    [SerializeField] private float knockBackTime = 0.1f;        // Время отбрасывания
+
+    private Rigidbody2D rb;                                     // Компонент физики
+
+    // Инициализация компонентов при создании
+    private void Awake(){
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    // Получение отбрасывания от источника урона
+    public void GetKnockedBack(Transform damageSource, float knockBackTrust)
+    {
+        GettingKnockedBack = true;
+        // Расчет силы отбрасывания с учетом массы объекта
+        Vector2 difference = (transform.position - damageSource.position).normalized * knockBackTrust * rb.mass;
+        rb.AddForce(difference, ForceMode2D.Impulse);
+        StartCoroutine(KnockRoutine());
+    }
+
+    // Корутина отбрасывания
+    private IEnumerator KnockRoutine()
+    {
+        yield return new WaitForSeconds(knockBackTime);
+        rb.linearVelocity = Vector2.zero;                       // Остановка движения
+        GettingKnockedBack = false;                             // Сброс флага отбрасывания
+    }
+}
+
+-SlashAnim- (Класс управления анимацией удара)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления анимацией удара (частицы)
+public class SlashAnim : MonoBehaviour
+{
+    private ParticleSystem ps;                               // Система частиц для эффекта удара
+
+    // Получение компонента системы частиц при создании
+    private void Awake()
+    {
+        ps = GetComponent<ParticleSystem>();
+    }
+
+    // Проверка завершения анимации каждый кадр
+    private void Update()
+    {
+        if (ps && !ps.IsAlive())
+        {
+            DestroySelf();
+        }
+    }
+
+    // Уничтожение объекта после завершения анимации
+    public void DestroySelf() {
+        Destroy(gameObject);
+    }
+}
+```
+
+-DamageSource- (Класс источника урона)
+```csharp
+using UnityEngine;
+
+// Класс источника урона (используется для коллайдеров оружия)
+public class DamageSource : MonoBehaviour
+{
+    private int damageAmount;                                // Количество наносимого урона
+
+    // Получение значения урона из текущего оружия при старте
+    private void Start(){
+        MonoBehaviour currentActiveWeapon = ActiveWeapon.Instance.CurrentActiveWeapon;
+        damageAmount = (currentActiveWeapon as IWeapon).GetWeaponInfo().weaponDamage;
+    }
+
+    // Обработка столкновения с врагом и нанесение урона
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.GetComponent<EnemyHealth>()){
+            EnemyHealth enemyHealth = other.gameObject.GetComponent<EnemyHealth>();
+            enemyHealth?.TakeDamage(damageAmount);
+        }
+    }
+}
+```
+
+-ActiveWeapon- (Класс управления активным оружием)
+```csharp
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+// Класс управления активным оружием игрока, наследуется от Singleton для глобального доступа
+public class ActiveWeapon : Singleton<ActiveWeapon>
+{
+   public MonoBehaviour CurrentActiveWeapon { get; private set; }  // Текущее активное оружие
+
+   private PlayerControls playerControls;                          // Система управления
+   private float timeBetweenAttacks;                              // Время между атаками
+
+   private bool attackButtonDown;                                 // Флаг нажатия кнопки атаки
+   private bool isAttacking = false;                              // Флаг выполнения атаки
+
+   // Инициализация компонентов при создании объекта
+   protected override void Awake() 
+   {
+    base.Awake();
+    playerControls = new PlayerControls();
+   }
+
+   // Включение системы управления
+   private void OnEnable() 
+   {
+    playerControls.Enable();
+   }
+
+    // Начальная настройка при старте
+    private void Start() 
+    {
+        // Подписка на события нажатия и отпускания кнопки атаки
+        playerControls.Player.Attack.started += _ => StartAttacking();
+        playerControls.Player.Attack.canceled += _ => StopAttacking();
+
+        AttackCooldown();
+   }
+
+    // Обновление каждый кадр
+    private void Update() 
+    {
+        Attack();
+    }
+
+    // Установка нового оружия
+    public void NewWeapon(MonoBehaviour newWeapon){
+        CurrentActiveWeapon = newWeapon;
+
+        AttackCooldown();
+        timeBetweenAttacks = (CurrentActiveWeapon as IWeapon).GetWeaponInfo().weaponCooldown;
+    }
+
+    // Очистка текущего оружия
+    public void WeaponNull(){
+        CurrentActiveWeapon = null;
+    }
+
+    // Запуск перезарядки атаки
+    private void AttackCooldown(){
+        isAttacking = true;
+        StopAllCoroutines();
+        StartCoroutine(TimeBetweenAttacksRoutine());
+    }
+
+    // Корутина перезарядки атаки
+    private IEnumerator TimeBetweenAttacksRoutine(){
+        yield return new WaitForSeconds(timeBetweenAttacks);
+        isAttacking = false;
+    }
+
+    // Начало атаки (нажатие кнопки)
+    private void StartAttacking(){
+        attackButtonDown = true;
+    }
+
+    // Окончание атаки (отпускание кнопки)
+    private void StopAttacking(){
+        attackButtonDown = false;
+    }
+
+    // Выполнение атаки
+    private void Attack(){
+        if (attackButtonDown && !isAttacking && CurrentActiveWeapon){
+            AttackCooldown();
+            (CurrentActiveWeapon as IWeapon).Attack();
+        }
+    }
+}
+```
+
+-Projectile- (Класс управления снарядом)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+// Класс управления снарядом (стрелой, пулей и т.д.)
+public class Projectile : MonoBehaviour
+{
+    [SerializeField] private float moveSpeed = 22f;         // Скорость движения снаряда
+    [SerializeField] private GameObject particleOnHitPrefabVFX;  // Эффект при попадании
+    [SerializeField] private bool isEnemyProjectile = false;     // Флаг снаряда врага
+    [SerializeField] private float projectileRange = 10f;        // Дальность полета снаряда
+
+    private Vector3 startPosition;                           // Начальная позиция снаряда
+
+    // Сохранение начальной позиции при создании
+    private void Start() {
+        startPosition = transform.position;
+    }
+
+    // Обновление каждый кадр
+    private void Update()
+    {
+        MoveProjectile();
+        DetectFireDistance();
+    }
+
+    // Обновление дальности полета снаряда
+    public void UpdateProjectileRange(float projectileRange){
+        this.projectileRange = projectileRange;
+    }
+
+    // Обновление скорости движения снаряда
+    public void UpdateMoveSpeed(float moveSpeed)
+    {
+        this.moveSpeed = moveSpeed;
+    }
+
+    // Обработка столкновений с другими объектами
+    private void OnTriggerEnter2D(Collider2D other) {
+        EnemyHealth enemyHealth = other.gameObject.GetComponent<EnemyHealth>();
+        Indestructible indestructible = other.gameObject.GetComponent<Indestructible>();
+        PlayerHealth player = other.gameObject.GetComponent<PlayerHealth>();
+
+        // Проверяем столкновение с не-триггер коллайдером
+        if (!other.isTrigger && (enemyHealth || indestructible || player)) {
+            // Если снаряд врага попал в игрока или снаряд игрока попал во врага
+            if ((player && isEnemyProjectile && SceneManager.GetActiveScene().name != "Menu") || (enemyHealth && !isEnemyProjectile)) {
+                player?.TakeDamage(1, transform);
+                Instantiate(particleOnHitPrefabVFX, transform.position, transform.rotation);
+                Destroy(gameObject);
+            } 
+            // Если снаряд попал в неразрушаемый объект
+            else if (!other.isTrigger && indestructible) {
+                Instantiate(particleOnHitPrefabVFX, transform.position, transform.rotation);
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    // Проверка дальности полета снаряда
+    private void DetectFireDistance() {
+        if (Vector3.Distance(transform.position, startPosition) > projectileRange) {
+            Destroy(gameObject);
+        }
+    }
+
+    // Движение снаряда
+    private void MoveProjectile()
+    {
+        transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
+    }
+}
+```
+
+-Stamina- (Класс управления выносливостью)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+// Класс управления выносливостью игрока, наследуется от Singleton для глобального доступа
+public class Stamina : Singleton<Stamina>
+{
+    public int CurrentStamina { get; private set; }         // Текущее количество выносливости
+
+    [SerializeField] private Sprite fullStaminaImage;       // Спрайт полной выносливости
+    [SerializeField] private Sprite emptyStaminaImage;      // Спрайт пустой выносливости
+    [SerializeField] private int timeBetweenStaminaRefresh = 3;  // Время между восстановлением выносливости
+
+    private Transform staminaContainer;                      // Контейнер для отображения выносливости
+    private int startingStamina = 3;                        // Начальное количество выносливости
+    private int maxStamina;                                 // Максимальное количество выносливости
+    const string STAMINA_CONTAINER_TEXT = "Stamina Container";  // Имя объекта контейнера выносливости
+
+    // Инициализация компонентов при создании объекта
+    protected override void Awake() {
+        base.Awake();
+
+        maxStamina = startingStamina;
+        CurrentStamina = startingStamina;
+    }
+
+    // Начальная настройка при старте
+    private void Start() {
+        staminaContainer = GameObject.Find(STAMINA_CONTAINER_TEXT).transform;
+    }
+
+    // Использование выносливости
+    public void UseStamina() {
+        CurrentStamina--;
+        UpdateStaminaImages();
+    }
+
+    // Восстановление выносливости
+    public void RefreshStamina() {
+        if (CurrentStamina < maxStamina) {
+            CurrentStamina++;
+        }
+        UpdateStaminaImages();
+    }
+
+    // Корутина автоматического восстановления выносливости
+    private IEnumerator RefreshStaminaRoutine() {
+        while (true) {
+            yield return new WaitForSeconds(timeBetweenStaminaRefresh);
+            RefreshStamina();
+        }
+    }
+
+    // Обновление отображения выносливости
+    private void UpdateStaminaImages() {
+        // Обновляем спрайты для каждого индикатора выносливости
+        for (int i = 0; i < maxStamina; i++) {
+            if (i <= CurrentStamina - 1) {
+                staminaContainer.GetChild(i).GetComponent<Image>().sprite = fullStaminaImage;
+            } else {
+                staminaContainer.GetChild(i).GetComponent<Image>().sprite = emptyStaminaImage;
+            }
+        }
+
+        // Запускаем восстановление, если выносливость не полная
+        if (CurrentStamina < maxStamina) {
+            StopAllCoroutines();
+            StartCoroutine(RefreshStaminaRoutine());
+        }
+    }
+}
+
+---UI---
+
+-InventorySlot- (Класс слота инвентаря)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс слота инвентаря для хранения информации об оружии
+public class InventorySlot : MonoBehaviour
+{
+    [SerializeField] private WeaponInfo weaponInfo;              // Информация об оружии в слоте
+
+    // Получение информации об оружии
+    public WeaponInfo GetWeaponInfo() {
+        return weaponInfo;
+    }
+}
+```
+
+-MouseFollow- (Класс для поворота объекта в сторону курсора)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс для поворота объекта в сторону курсора мыши
+public class MouseFollow : MonoBehaviour
+{
+    // Обновление каждый кадр
+    private void Update() {
+        FaceMouse();
+    }
+
+    // Поворот объекта в сторону курсора
+    private void FaceMouse() {
+        // Получение позиции мыши в мировых координатах
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+        // Расчет направления от объекта к курсору
+        Vector2 direction = transform.position - mousePosition;
+
+        // Поворот объекта в сторону курсора
+        transform.right = -direction;
+    }
+}
+```
+
+-ActiveInventory- (Класс управления активным инвентарем)
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Класс управления активным инвентарем, наследуется от Singleton для глобального доступа
+public class ActiveInventory : Singleton<ActiveInventory>
+{
+    private int activeSlotIndexNum = 0;                          // Индекс активного слота
+
+    private PlayerControls playerControls;                       // Система управления
+
+    // Инициализация при создании объекта
+    protected override void Awake() {
+        base.Awake();
+
+        playerControls = new PlayerControls();
+    }
+
+    // Начальная настройка при старте
+    private void Start() {
+        // Подписка на событие переключения слота инвентаря
+        playerControls.Inventory.Keyboard.performed += ctx => ToggleActiveSlot((int)ctx.ReadValue<float>());
+    }
+
+    // Включение системы управления
+    private void OnEnable() {
+        playerControls.Enable();
+    }
+
+    // Экипировка начального оружия
+    public void EquipStartingWeapon() {
+        ToggleActiveHighlight(0);
+    }
+
+    // Переключение активного слота
+    private void ToggleActiveSlot(int numValue) {
+        ToggleActiveHighlight(numValue - 1);
+    }
+
+    // Переключение подсветки активного слота
+    private void ToggleActiveHighlight(int indexNum) {
+        activeSlotIndexNum = indexNum;
+
+        // Отключение подсветки всех слотов
+        foreach (Transform inventorySlot in this.transform)
+        {
+            inventorySlot.GetChild(0).gameObject.SetActive(false);
+        }
+
+        // Включение подсветки выбранного слота
+        this.transform.GetChild(indexNum).GetChild(0).gameObject.SetActive(true);
+
+        ChangeActiveWeapon();
+    }
+
+    // Смена активного оружия
+    private void ChangeActiveWeapon() {
+        // Уничтожение текущего оружия
+        if (ActiveWeapon.Instance.CurrentActiveWeapon != null) {
+            Destroy(ActiveWeapon.Instance.CurrentActiveWeapon.gameObject);
+        }
+
+        // Получение информации о новом оружии
+        Transform childTransform = transform.GetChild(activeSlotIndexNum);
+        InventorySlot inventorySlot = childTransform.GetComponentInChildren<InventorySlot>();
+        
+        if (inventorySlot == null) {
+            ActiveWeapon.Instance.WeaponNull();
+            return;
+        }
+
+        WeaponInfo weaponInfo = inventorySlot.GetWeaponInfo();
+        
+        if (weaponInfo == null) {
+            ActiveWeapon.Instance.WeaponNull();
+            return;
+        }
+
+        GameObject weaponToSpawn = weaponInfo.weaponPrefab;
+        
+        if (weaponToSpawn == null) {
+            ActiveWeapon.Instance.WeaponNull();
+            return;
+        }
+
+        // Создание нового оружия
+        GameObject newWeapon = Instantiate(weaponToSpawn, ActiveWeapon.Instance.transform);
+
+        // Установка нового оружия как активного
+        ActiveWeapon.Instance.NewWeapon(newWeapon.GetComponent<MonoBehaviour>());
+    }
+}
+```
+
+-Menu- (Класс управления главным меню)
+```csharp
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+// Класс управления главным меню
+public class Menu : MonoBehaviour
+{
+    [SerializeField] private GameObject pauseMenu;               // Ссылка на меню паузы
+    [SerializeField] private GameObject activeInventory;         // Ссылка на активный инвентарь
+    [SerializeField] private GameObject uiStats;                 // Ссылка на UI статистики
+    [SerializeField] private GameObject menuUI;                  // Ссылка на UI меню
+
+    // Инициализация при создании объекта
+    private void Awake()
+    {
+        // Проверка и создание EventSystem при необходимости
+        if (FindObjectOfType<EventSystem>() == null)
+        {
+            GameObject eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<EventSystem>();
+            eventSystem.AddComponent<StandaloneInputModule>();
+        }
+
+        // Подписка на событие загрузки сцены
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    // Отписка от событий при уничтожении объекта
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Обработка загрузки новой сцены
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Обновление видимости UI элементов
+        UpdateUIVisibility();
+    }
+
+    // Обновление видимости UI элементов
+    private void UpdateUIVisibility()
+    {
+        bool isMenuScene = SceneManager.GetActiveScene().name == "Menu";
+
+        // Управление видимостью UI элементов в зависимости от сцены
+        if (pauseMenu != null) pauseMenu.SetActive(!isMenuScene);
+        if (activeInventory != null) activeInventory.SetActive(!isMenuScene);
+        if (uiStats != null) uiStats.SetActive(!isMenuScene);
+        if (menuUI != null) menuUI.SetActive(isMenuScene);
+
+        // Сброс состояния паузы при переходе в меню
+        if (isMenuScene)
+        {
+            Time.timeScale = 1f;
+            if (pauseMenu != null)
+            {
+                PauseMenu pauseMenuComponent = pauseMenu.GetComponent<PauseMenu>();
+                if (pauseMenuComponent != null)
+                {
+                    pauseMenuComponent.PauseGame = false;
+                }
+            }
+        }
+    }
+
+    // Запуск игры
+    public void Play()
+    {
+        // Загрузка следующей сцены
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    // Выход из игры
+    public void Quit()
+    {
+        Debug.Log("Quit");
+        Application.Quit();
+    }
+}
+```
+
+-PauseMenu- (Класс управления меню паузы)
+```csharp
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+// Класс управления меню паузы
+public class PauseMenu : MonoBehaviour
+{
+    public bool PauseGame;                                       // Флаг состояния паузы
+    public GameObject pauseMenu;                                 // Панель меню паузы
+
+    // Инициализация при создании объекта
+    private void Awake()
+    {
+        // Подписка на событие загрузки сцены
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        
+        // Скрытие панели паузы при создании
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
+    }
+
+    // Отписка от событий при уничтожении объекта
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Обработка загрузки новой сцены
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Скрытие панели паузы и сброс времени
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        PauseGame = false;
+    }
+
+    // Начальная настройка при старте
+    private void Start()
+    {
+        // Скрытие панели паузы
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
+    }
+
+    // Обработка активации объекта
+    private void OnEnable()
+    {
+        // Скрытие панели паузы
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
+    }
+
+    // Обновление каждый кадр
+    void Update() {
+        // Проверка нажатия клавиши Escape
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (PauseGame) {
+                Resume();
+            } else {
+                Pause();
+            }
+        }
+    }
+
+    // Возобновление игры
+    public void Resume() {
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        PauseGame = false;
+    }
+
+    // Постановка игры на паузу
+    public void Pause() {
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(true);
+        }
+        Time.timeScale = 0f;
+        PauseGame = true;
+    }  
+
+    // Загрузка главного меню
+    public void LoadMenu() {
+        // Скрытие панели паузы и сброс времени
+        if (pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
+        Time.timeScale = 1f;
+        PauseGame = false;
+        
+        // Загрузка сцены меню
+        SceneManager.LoadScene("Menu");
+    }
+} 
