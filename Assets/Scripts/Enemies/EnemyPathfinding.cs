@@ -21,10 +21,9 @@ public class EnemyPathfinding : MonoBehaviour
 
     // Обновление физики каждый фиксированный кадр
     private void FixedUpdate() {
-        if (knockback.GettingKnockedBack || rb == null) { return; }           // Пропуск при отбрасывании или отсутствии rb
+        if (knockback.GettingKnockedBack) { return; }           // Пропуск при отбрасывании
 
-        Vector2 newPosition = rb.position + moveDir * (moveSpeed * Time.fixedDeltaTime);
-        rb.MovePosition(newPosition);
+        rb.MovePosition(rb.position + moveDir * (moveSpeed * Time.fixedDeltaTime));
 
         // Отработка поворота спрайта
         if (moveDir.x < 0) {

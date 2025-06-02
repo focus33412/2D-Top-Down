@@ -78,7 +78,7 @@ public class PlayerController : Singleton<PlayerController>
     // Физическое обновление движения
     private void FixedUpdate() {
         if (!isDashing) {
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+            rb.linearVelocity = moveDirection * moveSpeed;
         }
     }
 
