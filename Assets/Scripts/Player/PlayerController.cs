@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 // Основной класс управления игроком, наследуется от Singleton для глобального доступа
 public class PlayerController : Singleton<PlayerController>
@@ -79,7 +78,7 @@ public class PlayerController : Singleton<PlayerController>
     // Физическое обновление движения
     private void FixedUpdate() {
         if (!isDashing) {
-            rb.linearVelocity = moveDirection * moveSpeed;
+            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
         }
     }
 

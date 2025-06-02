@@ -17,21 +17,39 @@ public class KnockBack : MonoBehaviour
     }
 
     // Получение отбрасывания от источника урона
-    public void GetKnockedBack(Transform damageSource, float knockBackTrust)
+    public void GetKnockedBack(Transform damageSource, float knockbackPower)
     {
-        GettingKnockedBack = true;
-        // Расчет силы отбрасывания с учетом массы объекта
-        Vector2 difference = (transform.position - damageSource.position).normalized * knockBackTrust * rb.mass;
-        rb.AddForce(difference, ForceMode2D.Impulse);
-        StartCoroutine(KnockRoutine());
+        if (rb == null) return;
+        
+        StopAllCoroutines();
+        StartCoroutine(KnockRoutine(damageSource, knockbackPower));
     }
 
     // Корутина отбрасывания
-    private IEnumerator KnockRoutine()
+    private IEnumerator KnockRoutine(Transform damageSource, float knockbackPower)
     {
-        yield return new WaitForSeconds(knockBackTime);
-        rb.linearVelocity = Vector2.zero;                       // Остановка движения
-        GettingKnockedBack = false;                             // Сброс флага отбрасывания
+        GettingKnockedBack = true;
+        
+        // Вычисляем направление отбрасывания
+        Vector2 direction = (transform.position - damageSource.position).normalized;
+        
+        // Применяем начальную скорость
+        float currentSpeed = knockbackPower;
+        rb.velocity = direction * currentSpeed;
+        
+        // Плавно уменьшаем скорость
+        float elapsedTime = 0f;
+        while (elapsedTime < knockBackTime) {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / knockBackTime;
+            currentSpeed = Mathf.Lerp(knockbackPower, 0f, t);
+            rb.velocity = direction * currentSpeed;
+            yield return null;
+        }
+        
+        // Сбрасываем скорость в конце
+        rb.velocity = Vector2.zero;
+        GettingKnockedBack = false;
     }
 }
 
